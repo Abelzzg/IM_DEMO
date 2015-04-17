@@ -52,9 +52,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	}
 
 	/*
-	 * (non-Javadoc)
 	 * 
-	 * @see android.widget.Adapter#getCount()
 	 */
 	@Override
 	public int getCount() {

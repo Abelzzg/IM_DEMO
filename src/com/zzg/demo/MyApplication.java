@@ -29,7 +29,7 @@ public class MyApplication extends Application {
 
 	public static MyApplication mInstance;
 
-	public static List<User> users;
+	private  List<User> users = new ArrayList<User>();
 
 	@Override
 	public void onCreate() {
@@ -41,58 +41,16 @@ public class MyApplication extends Application {
 	/**
 	 * 暂时先从手机联系人中取联系人
 	 */
-	private List<User> getUsers() {
-		//
-		final List<User> list = new ArrayList<User>();
-		// new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// // TODO Auto-generated method stub
-		// ContentResolver resolver = getContentResolver();
-		//
-		// Uri uri = Uri
-		// .parse("content://com.android.contacts/raw_contacts");
-		// Uri dateUri = Uri.parse("content://com.android.contacts/data");
-		//
-		// Cursor cursor = resolver.query(uri,
-		// new String[] { "contact_id" }, null, null, null);
-		//
-		// while (cursor.moveToNext()) {
-		// String contact_id = cursor.getString(0);
-		// if (contact_id != null) {
-		// // 具体的某一个联系人
-		// User user = new User();
-		// Cursor dataCursor = resolver.query(dateUri,
-		// new String[] { "data1", "mimetype" },
-		// "contact_id=?", new String[] { contact_id },
-		// null);
-		//
-		// while (dataCursor.moveToNext()) {
-		// String data1 = dataCursor.getString(0);
-		// String mimetype = dataCursor.getString(1);
-		// System.out.println("data1==" + data1
-		// + ",mimetype==" + mimetype);
-		// if ("vnd.android.cursor.item/name".equals(mimetype)) {
-		// // 姓名
-		// user.setName(data1);
-		// } else if ("vnd.android.cursor.item/phone_v2"
-		// .equals(mimetype)) {
-		// // 电话号码
-		// user.setPhone(data1);
-		// }
-		// list.add(user);
-		// }
-		// dataCursor.close();
-		// }
-		// }
-		// cursor.close();
-		// }
-		// }).start();
+	public List<User> getUsers() {
 		User user = new User("zhangsan", "123456789", "123456789@qq.com");
-		list.add(user);
-		list.add(user);
-		list.add(user);
-		return list;
+		users.add(new User("B2222", "222222222", "123456@qq.com"));
+		users.add(new User("b2222", "222222222", "123456@qq.com"));
+		users.add(new User("在没变", "222222222", "123456@qq.com"));
+		users.add(new User("波在没变", "222222222", "123456@qq.com"));
+		users.add(new User("啊在没变", "222222222", "123456@qq.com"));
+		users.add(new User("a1111", "123456789", "123456@qq.com"));
+		users.add(new User("A2222", "222222222", "123456@qq.com"));
+		return users;
 	}
 
 	/**

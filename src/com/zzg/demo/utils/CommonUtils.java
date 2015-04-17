@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * @author acer Descrption:TODO WHAT 2015-4-17 上午9:19:27
+ */
 public class CommonUtils {
 
 	/** 检查是否有网络 */

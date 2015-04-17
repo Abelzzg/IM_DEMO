@@ -21,7 +21,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="6.0dip"
         android:padding="5dp"
-        android:src="@drawable/default_head" />
+        android:src="@drawable/default_head1" />
 
     <LinearLayout
         android:layout_height="56.0dip"

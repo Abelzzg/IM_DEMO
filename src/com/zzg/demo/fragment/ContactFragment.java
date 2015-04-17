@@ -3,13 +3,11 @@
  */
 package com.zzg.demo.fragment;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,17 +16,19 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Filter.FilterListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +41,8 @@ import com.zzg.demo.ui.AddFriendActivity;
 import com.zzg.demo.ui.NearFriendsActivity;
 import com.zzg.demo.ui.NewFriendsActivity;
 import com.zzg.demo.utils.CharacterParser;
+import com.zzg.demo.utils.CustomDialog;
+import com.zzg.demo.utils.CustomDialog.CallBack;
 import com.zzg.demo.utils.SortChineseName;
 import com.zzg.demo.view.ClearEditText;
 import com.zzg.demo.view.HeaderLayout;
@@ -51,8 +53,7 @@ import com.zzg.demo.view.MyLetterView.OnTouchingLetterChangedListener;
 /**
  * @author acer Descrption:TODO WHAT 2015-4-8 下午4:07:09
  */
-public class ContactFragment extends Fragment implements OnItemClickListener,
-		OnItemLongClickListener {
+public class ContactFragment extends Fragment {
 
 	/**
 	 * header
@@ -82,9 +83,22 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 	// @ViewInject(value = R.id.dialog)
 	TextView dialog;
 
+	/**
+	 * 右侧字母导航
+	 */
 	MyLetterView right_letter;
 
 	private LayoutInflater mInflater;
+
+	/**
+	 * 联系人s
+	 */
+	List<User> users;
+
+	/**
+	 * Java汉字转换为拼音s
+	 */
+	CharacterParser characterParser;
 
 	/**
 	 * 联系人列表适配器
@@ -112,6 +126,8 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 	 */
 	LinearLayout layout_near;
 
+	private InputMethodManager inputMethodManager;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -132,6 +148,7 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 		initTopBarForOnlyTitle("联系人");
 		init();
 	}
@@ -205,16 +222,34 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 		// 联系人列表设置
 		// 添加新朋友和附近的人
 		list_friends.addHeaderView(headView);
-		users = new ArrayList<User>();
-		users.add(new User("B2222", "222222222", "123456@qq.com"));
-		users.add(new User("b2222", "222222222", "123456@qq.com"));
-		users.add(new User("在没变", "222222222", "123456@qq.com"));
-		users.add(new User("波在没变", "222222222", "123456@qq.com"));
-		users.add(new User("啊在没变", "222222222", "123456@qq.com"));
-		users.add(new User("a1111", "123456789", "123456@qq.com"));
-		users.add(new User("A2222", "222222222", "123456@qq.com"));
+		users = MyApplication.getInstance().getUsers();
 		contact = new ContactAdapter(getActivity(), users);
 		list_friends.setAdapter(contact);
+		list_friends.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				// TODO Auto-generated method stub
+				System.out.println(arg0.getClass().getSimpleName());
+				User user = users.get(position - 1);
+				showDeleteDialog(user);
+			}
+		});
+
+		list_friends.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// 隐藏软键盘
+				if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+					if (getActivity().getCurrentFocus() != null)
+						inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+								InputMethodManager.HIDE_NOT_ALWAYS);
+				}
+				return false;
+			}
+		});
+		
 		// 左侧字母导航
 		dialog = (TextView) findViewById(R.id.dialog);
 		right_letter = (MyLetterView) findViewById(R.id.right_letter);
@@ -222,10 +257,6 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 		right_letter
 				.setOnTouchingLetterChangedListener(new mOnTouchingLetterChangedListener());
 	}
-
-	List<User> users;
-
-	CharacterParser characterParser;
 
 	/**
 	 * 根据搜索框内容实时更新list
@@ -262,7 +293,8 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 			// TODO Auto-generated method stub
 			int position = contact.getPositionForSection(s.charAt(0));
 			if (position != -1) {
-				list_friends.setSelection(position);
+				//我也不知道为啥要+1 可能是因为list之前家里一个headview
+				list_friends.setSelection(position+1);
 			}
 		}
 
@@ -290,27 +322,23 @@ public class ContactFragment extends Fragment implements OnItemClickListener,
 				new OnRightButtonClickListener());
 	}
 
-	/*
+	/**
+	 * 删除的dialog
 	 * 
+	 * @param user
 	 */
-	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
+	private void showDeleteDialog(final User user) {
 		// TODO Auto-generated method stub
-		return false;
+		final CustomDialog customDialog = new CustomDialog(getActivity());
+		customDialog.createDialog("删除", "提示", "确认删除？", new CallBack() {
+			@Override
+			public void isConfirm(boolean flag) {
+				// TODO Auto-generated method stub
+				if (flag) {
+					users.remove(user);
+					contact.remove(user);
+				}
+			}
+		});
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget
-	 * .AdapterView, android.view.View, int, long)
-	 */
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
