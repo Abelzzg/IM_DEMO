@@ -39,7 +39,7 @@ public class CustomDialog {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
-				callBack.isConfirm(true);
+				callBack.isConfirm(arg0, true);
 
 			}
 		});
@@ -55,14 +55,14 @@ public class CustomDialog {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				// TODO Auto-generated method stub
-				callBack.isConfirm(true);
+				callBack.isConfirm(arg0, true);
 			}
 		});
 		builder.create().show();
 	}
 
 	public interface CallBack {
-		public void isConfirm(boolean flag);
+		public void isConfirm(DialogInterface arg0, boolean flag);
 	}
 
 	public void createToasts(String message, LayoutInflater layoutInflater) {

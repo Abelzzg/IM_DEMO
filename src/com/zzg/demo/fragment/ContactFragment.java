@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.DialerFilter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -127,7 +129,7 @@ public class ContactFragment extends Fragment {
 	LinearLayout layout_near;
 
 	private InputMethodManager inputMethodManager;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -148,7 +150,8 @@ public class ContactFragment extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		initTopBarForOnlyTitle("联系人");
 		init();
 	}
@@ -243,13 +246,15 @@ public class ContactFragment extends Fragment {
 				// 隐藏软键盘
 				if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
 					if (getActivity().getCurrentFocus() != null)
-						inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+						inputMethodManager.hideSoftInputFromWindow(
+								getActivity().getCurrentFocus()
+										.getWindowToken(),
 								InputMethodManager.HIDE_NOT_ALWAYS);
 				}
 				return false;
 			}
 		});
-		
+
 		// 左侧字母导航
 		dialog = (TextView) findViewById(R.id.dialog);
 		right_letter = (MyLetterView) findViewById(R.id.right_letter);
@@ -293,8 +298,8 @@ public class ContactFragment extends Fragment {
 			// TODO Auto-generated method stub
 			int position = contact.getPositionForSection(s.charAt(0));
 			if (position != -1) {
-				//我也不知道为啥要+1 可能是因为list之前家里一个headview
-				list_friends.setSelection(position+1);
+				// 我也不知道为啥要+1 可能是因为list之前家里一个headview
+				list_friends.setSelection(position + 1);
 			}
 		}
 
@@ -331,12 +336,15 @@ public class ContactFragment extends Fragment {
 		// TODO Auto-generated method stub
 		final CustomDialog customDialog = new CustomDialog(getActivity());
 		customDialog.createDialog("删除", "提示", "确认删除？", new CallBack() {
+
 			@Override
-			public void isConfirm(boolean flag) {
+			public void isConfirm(DialogInterface arg0, boolean flag) {
+				// TODO Auto-generated method stub
 				// TODO Auto-generated method stub
 				if (flag) {
 					users.remove(user);
 					contact.remove(user);
+					arg0.dismiss();
 				}
 			}
 		});

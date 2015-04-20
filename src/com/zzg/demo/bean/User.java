@@ -3,11 +3,8 @@
  */
 package com.zzg.demo.bean;
 
-import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.baidu.location.BDLocation;
 import com.zzg.demo.utils.CharacterParser;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * @author acer Descrption:TODO WHAT 2015-4-14 下午2:22:38
@@ -48,7 +45,8 @@ public class User {
 		// 从姓名中提出第一个字母
 		CharacterParser characterParser = CharacterParser.getInstance();
 		String getSelling = characterParser.getSelling(name);
-		System.out.println("getSelling===========>>>"+getSelling.toUpperCase().charAt(0));
+		System.out.println("getSelling===========>>>"
+				+ getSelling.toUpperCase().charAt(0));
 		setAlpha(String.valueOf(getSelling.toUpperCase().charAt(0)));
 	}
 
@@ -70,7 +68,7 @@ public class User {
 	/**
 	 * @return the location
 	 */
-	public GeoPoint getLocation() {
+	public BDLocation getLocation() {
 		return location;
 	}
 
@@ -78,14 +76,14 @@ public class User {
 	 * @param location
 	 *            the location to set
 	 */
-	public void setLocation(GeoPoint location) {
+	public void setLocation(BDLocation location) {
 		this.location = location;
 	}
 
 	/**
 	 * 坐标
 	 */
-	private GeoPoint location;
+	private BDLocation location;
 
 	/**
 	 * @return the name
