@@ -27,7 +27,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.zzg.demo.R;
 
-public class BaseMapActivity extends FragmentActivity {
+public abstract class BaseMapActivity extends FragmentActivity {
 	// 定位相关
 	public LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
@@ -37,69 +37,16 @@ public class BaseMapActivity extends FragmentActivity {
 	public BaiduMap mBaiduMap;
 
 	// UI相关
-	OnCheckedChangeListener radioButtonListener;
-	Button requestLocButton;
 	boolean isFirstLoc = true;// 是否首次定位
 
+	
+	public abstract void initOverLay(BDLocation location);
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_location);
-		requestLocButton = (Button) findViewById(R.id.button1);
 		mCurrentMode = LocationMode.NORMAL;
-		requestLocButton.setText("普通");
-		OnClickListener btnClickListener = new OnClickListener() {
-			public void onClick(View v) {
-				switch (mCurrentMode) {
-				case NORMAL:
-					requestLocButton.setText("跟随");
-					mCurrentMode = LocationMode.FOLLOWING;
-					mBaiduMap
-							.setMyLocationConfigeration(new MyLocationConfiguration(
-									mCurrentMode, true, mCurrentMarker));
-					break;
-				case COMPASS:
-					requestLocButton.setText("普通");
-					mCurrentMode = LocationMode.NORMAL;
-					mBaiduMap
-							.setMyLocationConfigeration(new MyLocationConfiguration(
-									mCurrentMode, true, mCurrentMarker));
-					break;
-				case FOLLOWING:
-					requestLocButton.setText("罗盘");
-					mCurrentMode = LocationMode.COMPASS;
-					mBaiduMap
-							.setMyLocationConfigeration(new MyLocationConfiguration(
-									mCurrentMode, true, mCurrentMarker));
-					break;
-				}
-			}
-		};
-		requestLocButton.setOnClickListener(btnClickListener);
-
-		RadioGroup group = (RadioGroup) this.findViewById(R.id.radioGroup);
-		radioButtonListener = new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				if (checkedId == R.id.defaulticon) {
-					// 传入null则，恢复默认图标
-					mCurrentMarker = null;
-					mBaiduMap
-							.setMyLocationConfigeration(new MyLocationConfiguration(
-									mCurrentMode, true, null));
-				}
-				if (checkedId == R.id.customicon) {
-					// 修改为自定义marker
-					mCurrentMarker = BitmapDescriptorFactory
-							.fromResource(R.drawable.icon_geo);
-					mBaiduMap
-							.setMyLocationConfigeration(new MyLocationConfiguration(
-									mCurrentMode, true, mCurrentMarker));
-				}
-			}
-		};
-		group.setOnCheckedChangeListener(radioButtonListener);
-
 		// 地图初始化
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaiduMap = mMapView.getMap();
@@ -123,11 +70,18 @@ public class BaseMapActivity extends FragmentActivity {
 	 */
 	public class MyLocationListenner implements BDLocationListener {
 
+		int count = 1;
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
+			setLocation(location);
+			//在子类中实现此方法
+			if (count>=1) {
+				initOverLay(location);
+				count-=1;
+			}
 			// 添加圆
 			LatLng llCircle = new LatLng(location.getLatitude(),
 					location.getLongitude());
@@ -154,10 +108,20 @@ public class BaseMapActivity extends FragmentActivity {
 		}
 	}
 
+	protected BDLocation location;
+
 	@Override
 	protected void onPause() {
 		mMapView.onPause();
 		super.onPause();
+	}
+
+	/**
+	 * @param location
+	 */
+	public void setLocation(BDLocation location) {
+		// TODO Auto-generated method stub
+		this.location = location;
 	}
 
 	@Override

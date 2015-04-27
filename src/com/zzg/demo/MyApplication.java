@@ -17,6 +17,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.model.LatLng;
 import com.zzg.demo.bean.User;
 import com.zzg.demo.utils.CustomDialog;
 import com.zzg.demo.utils.CustomDialog.CallBack;
@@ -52,14 +53,48 @@ public class MyApplication extends Application {
 	 * 暂时先从手机联系人中取联系人
 	 */
 	public List<User> getUsers() {
-		User user = new User("zhangsan", "123456789", "123456789@qq.com");
-		users.add(new User("B2222", "222222222", "123456@qq.com"));
-		users.add(new User("b2222", "222222222", "123456@qq.com"));
-		users.add(new User("在没变", "222222222", "123456@qq.com"));
-		users.add(new User("波在没变", "222222222", "123456@qq.com"));
-		users.add(new User("啊在没变", "222222222", "123456@qq.com"));
-		users.add(new User("a1111", "123456789", "123456@qq.com"));
-		users.add(new User("A2222", "222222222", "123456@qq.com"));
+		BDLocation location = new BDLocation();
+		location.setLatitude(39.963175);
+		location.setLongitude(116.400244);
+		
+		BDLocation location1 = new BDLocation();
+		location1.setLatitude(39.942821);
+		location1.setLongitude(116.369199);
+		
+		BDLocation location2 = new BDLocation();
+		location2.setLatitude(39.939723);
+		location2.setLongitude(116.425541);
+		
+		BDLocation location3 = new BDLocation();
+		location3.setLatitude(39.963175);
+		location3.setLongitude(116.400244);
+		
+		BDLocation location4 = new BDLocation();
+		location4.setLatitude(39.906965);
+		location4.setLongitude(116.400244);
+		
+		BDLocation location5 = new BDLocation();
+		location5.setLatitude(39.963175);
+		location5.setLongitude(116.400244);
+		
+		BDLocation location6 = new BDLocation();
+		location6.setLatitude(39.942821);
+		location6.setLongitude(116.400244);
+		
+		BDLocation location7 = new BDLocation();
+		location7.setLatitude(39.942821);
+		location7.setLongitude(116.425541);
+		
+		
+		
+		User user = new User("zhangsan", "123456789", "123456789@qq.com",location);
+		users.add(new User("B2222", "222222222", "123456@qq.com",location1));
+		users.add(new User("b2222", "222222222", "123456@qq.com",location2));
+		users.add(new User("在没变", "222222222", "123456@qq.com",location3));
+		users.add(new User("波在没变", "222222222", "123456@qq.com",location4));
+		users.add(new User("啊在没变", "222222222", "123456@qq.com",location5));
+		users.add(new User("a1111", "123456789", "123456@qq.com",location6));
+		users.add(new User("A2222", "222222222", "123456@qq.com",location7));
 		return users;
 	}
 

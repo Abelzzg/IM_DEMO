@@ -38,7 +38,7 @@ public class User {
 	public User() {
 	}
 
-	public User(String name, String phone, String email) {
+	public User(String name, String phone, String email,BDLocation location) {
 		setName(name);
 		setPhone(phone);
 		setEmail(email);
@@ -48,6 +48,7 @@ public class User {
 		System.out.println("getSelling===========>>>"
 				+ getSelling.toUpperCase().charAt(0));
 		setAlpha(String.valueOf(getSelling.toUpperCase().charAt(0)));
+		setLocation(location);
 	}
 
 	/**
