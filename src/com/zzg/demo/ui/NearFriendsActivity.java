@@ -116,11 +116,6 @@ public class NearFriendsActivity extends BaseMapActivity {
 		return list_Data;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.zzg.demo.base.BaseMapActivity#onDestroy()
-	 */
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
@@ -128,13 +123,6 @@ public class NearFriendsActivity extends BaseMapActivity {
 		bitmap.recycle();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.zzg.demo.base.BaseMapActivity#initOverLay(com.baidu.location.BDLocation
-	 * )
-	 */
 	@Override
 	public void initOverLay(BDLocation location) {
 		// TODO Auto-generated method stub
